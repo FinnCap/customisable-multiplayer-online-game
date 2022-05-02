@@ -1,0 +1,44 @@
+.available-games-list {
+    list-style-type: none;
+    padding: 0px 0px 0px 10px;
+}
+
+li {
+    display: inline;
+}
+
+.choose-game {
+    text-align: center;
+    background: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    border-radius: 10px;
+
+    position: relative;
+    padding: 20px;
+    margin: 0px;
+    height: 100%;
+    width: 100%;    
+
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+}
+
+.choose-game-button {
+    background-color: white;
+    padding: 15px;
+    font-size: large;
+    margin-right: 10px;
+
+    border-radius: 5px;
+    border-color: #e7e7e7;
+    color: rgb(99, 99, 99);
+    margin-top: 10px;
+    border-style: solid;
+}
+
+.choose-game-button:hover {
+    background-color: #e7e7e7;
+    cursor: pointer;
+}

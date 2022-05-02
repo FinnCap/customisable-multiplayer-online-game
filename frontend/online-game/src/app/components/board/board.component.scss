@@ -1,0 +1,129 @@
+// .center {
+//     text-align: center;
+//     // margin: 0 auto;
+//     display: flex;
+//     justify-content: center;
+// }
+
+// main {
+//     display: grid;
+//     grid-template-columns: 200px 200px 200px;
+//     grid-gap: 0cm;
+// }
+
+// app-square {
+//     height: 200px;
+//     width: 200px;
+// }
+
+// .square-1 {
+//     border-bottom: 5px dodgerblue solid;
+// }
+
+// .square-2 {
+//     border-bottom: 5px dodgerblue solid;
+//     border-left: 5px dodgerblue solid;
+// }
+
+// .square-3 {
+//     border-left: 5px dodgerblue solid;
+//     border-bottom: 5px dodgerblue solid;
+// }
+
+// .square-4 {
+//     border-bottom: 5px dodgerblue solid;
+// }
+
+// .square-5 {
+//     border-left: 5px dodgerblue solid;
+//     border-bottom: 5px dodgerblue solid;
+// }
+
+// .square-6 {
+//     border-left: 5px dodgerblue solid;
+//     border-bottom: 5px dodgerblue solid;
+// }
+
+// .square-7 {
+//     border-right: 5px dodgerblue solid;
+// }
+
+// .square-8 {
+//     border-left: 5px dodgerblue solid;
+// }
+
+// .square-9 {
+//     border-left: 5px dodgerblue solid;
+// }
+
+// .notification {
+//     position: fixed;
+//     right: 2%;
+//     background-color: rgb(238, 238, 238);
+//     padding: 10px;
+//     border-radius: 3px;
+//     z-index: 100;
+//     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+//     display: flex;
+//     align-items: center;
+// }
+
+// .avatar {
+//     display: flex;
+//     border-radius: 50%;
+//     width: 36px;
+//     height: 36px;
+//     background-color: dodgerblue;
+//     align-items: center;
+//     justify-content: center;
+//     color: white;
+// }
+
+// .notification-label {
+//     display: flex;
+//     white-space: nowrap;
+//     height: 35px;
+//     padding-left: 8px;
+//     padding-right: 8px;
+//     text-align: center;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+// .button-box {
+//     float: left;
+//     text-align: center;
+//     align-items: center;
+//     justify-content: center;
+// }
+
+// .button {
+//     border: none;
+//     background-color: dodgerblue;
+//     font-size: small;
+//     color: white;
+//     border-radius: 3px;
+// }
+
+// .button:hover {
+//     background-color: rgb(11, 133, 255);
+//     cursor: pointer;
+// }
+
+.board {
+    // text-align: center;
+    background: #fff;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    border-radius: 10px;
+
+    position: relative;
+    padding: 0;
+    margin: 0;
+    height: 100%;
+    width: 100%;
+
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+    -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+    box-sizing: border-box;
+}

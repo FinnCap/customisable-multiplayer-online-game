@@ -1,0 +1,8 @@
+<div class="choose-game">
+    <h2>Choose A Game</h2>
+    <ul class="available-games-list">
+        <li *ngFor="let game of availableGames">
+            <button class="choose-game-button" style="outline:none" (click)="chooseGame(game)">{{game}}</button>
+        </li>
+    </ul>
+</div>

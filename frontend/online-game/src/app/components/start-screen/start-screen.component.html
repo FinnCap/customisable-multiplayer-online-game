@@ -1,0 +1,42 @@
+
+
+<div class="login-page">
+    <div class="login-page-top"></div>
+    <div class="login-page-container">
+        <h2>Create Or Join A Room</h2>
+        <form [formGroup]="newRoomForm" (ngSubmit)="newRoom()">
+            <div class="form-group">
+                <input class="input" name="username" placeholder="Username" style="outline:none" formControlName="username" [ngClass]="{ 'is-invalid': fN.username.errors }">
+                <button class="button" style="outline:none">Start New Room</button>
+                <div *ngIf="newRoomFormSubmitted && fN.username.errors" class="invalid-feedback">
+                    <div class="error-label" *ngIf="fN.username.errors.required">Username is required</div>
+                    <div class="error-label" *ngIf="fN.username.errors.minlength">
+                      Username must be at least 4 characters.
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        <br>
+        <div class="line"><span class="line-text">or</span></div>
+        <form [formGroup]="joinRoomForm" (ngSubmit)="joinRoom()">
+            <div class="form-group">
+                <input class="input" name="username" placeholder="Username" style="outline:none" formControlName="username" [ngClass]="{ 'is-invalid': fJ.username.errors }">
+                <div *ngIf="joinRoomFormSubmitted && fJ.username.errors" class="invalid-feedback">
+                    <div class="error-label" *ngIf="fJ.username.errors.required">Username is required</div>
+                    <div class="error-label" *ngIf="fJ.username.errors.minlength">Username must be at least 4 characters.</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <input class="input" placeholder="Room Code" style="outline:none" formControlName="roomCode" [ngClass]="{ 'is-invalid': fJ.roomCode.errors}">
+                <div *ngIf="joinRoomFormSubmitted && fJ.roomCode.errors" class="invalid-feedback">
+                    <div class="error-label" *ngIf="fJ.roomCode.errors.required">Room Code is required</div>
+                    <div class="error-label" *ngIf="fJ.roomCode.errors.minlength">Room Code must be at least 10 characters</div>
+                </div>
+            </div>
+            <div><button class="button" type="submit" style="outline:none">Join Room</button></div>
+            <label class="error-label">{{ displayedErrorMessage }}</label>
+        </form>
+    </div>
+    <div class="login-page-bottom"></div>
+</div>

@@ -1,0 +1,12 @@
+<div class="tik-tak-toe-board">
+    <button class="square-1" (click)="makeMove(0)" [disabled]="fieldDisabled(0)"> {{getField(0)}} </button>
+    <button class="square-2" (click)="makeMove(1)" [disabled]="fieldDisabled(1)"> {{getField(1)}} </button>
+    <button class="square-3" (click)="makeMove(2)" [disabled]="fieldDisabled(2)"> {{getField(2)}} </button>
+    <button class="square-4" (click)="makeMove(3)" [disabled]="fieldDisabled(3)"> {{getField(3)}} </button>
+    <button class="square-5" (click)="makeMove(4)" [disabled]="fieldDisabled(4)"> {{getField(4)}} </button>
+    <button class="square-6" (click)="makeMove(5)" [disabled]="fieldDisabled(5)"> {{getField(5)}} </button>
+    <button class="square-7" (click)="makeMove(6)" [disabled]="fieldDisabled(6)"> {{getField(6)}} </button>
+    <button class="square-8" (click)="makeMove(7)" [disabled]="fieldDisabled(7)"> {{getField(7)}} </button>
+    <button class="square-9" (click)="makeMove(8)" [disabled]="fieldDisabled(8)"> {{getField(8)}} </button>
+</div>
+<h3>My Symbol: {{mySymbol}} </h3>

@@ -1,0 +1,98 @@
+.square-1 {
+    grid-column: 1;
+    grid-row: 1;
+}
+
+.square-2 {
+    border-left: 5px dodgerblue solid;
+
+    grid-column: 2;
+    grid-row: 1;
+}
+
+.square-3 {
+    border-left: 5px dodgerblue solid;
+
+    grid-column: 3;
+    grid-row: 1;
+}
+
+.square-4 {
+    border-top: 5px dodgerblue solid;
+
+    grid-column: 1;
+    grid-row: 2;
+}
+
+.square-5 {
+    border-top: 5px dodgerblue solid;
+    border-left: 5px dodgerblue solid;
+
+    grid-column: 2;
+    grid-row: 2;
+}
+
+.square-6 {
+    border-top: 5px dodgerblue solid;
+    border-left: 5px dodgerblue solid;
+
+    grid-column: 3;
+    grid-row: 2;
+}
+
+.square-7 {
+    border-top: 5px dodgerblue solid;
+
+    grid-column: 1;
+    grid-row: 3;
+}
+
+.square-8 {
+    border-left: 5px dodgerblue solid;
+    border-top: 5px dodgerblue solid;
+
+    grid-column: 2;
+    grid-row: 3;
+}
+
+.square-9 {
+    border-left: 5px dodgerblue solid;
+    border-top: 5px dodgerblue solid;
+
+    grid-column: 3;
+    grid-row: 3;
+}
+
+.tik-tak-toe-board {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    border-radius: 10px;
+    border: 5px dodgerblue solid;
+    width: 50vh;
+    height: 50vh;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    -webkit-transform: translate(-50%, -50%);
+    transform: translate(-50%, -50%);
+}
+
+button { 
+    width: 100%; 
+    height: 100%; 
+    font-size: 5em !important;
+    background-color: rgb(209, 209, 209);
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    border: none;
+}
+
+button:hover {
+    background-color: rgb(120, 120, 120);
+    cursor: pointer;
+}
+
+button:disabled {
+    background-color: rgb(209, 209, 209);
+    cursor: default;
+}

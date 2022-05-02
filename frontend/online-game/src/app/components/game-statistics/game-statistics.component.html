@@ -1,0 +1,13 @@
+<div class="game-statistics">
+    <h2>Leaderboard</h2>
+    <ul class="available-games-list">
+        <li *ngFor="let user of getUsers()">
+            <div *ngIf="isThisUser(user.username); else elseBlock" class="this-user">
+                {{user.username}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.points}}
+            </div>
+            <ng-template #elseBlock>
+                {{user.username}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.points}}
+            </ng-template>
+        </li>
+    </ul>
+</div>  
