@@ -1,15 +1,8 @@
-import { Injectable } from '@angular/core';
-import { BoardComponent } from '../components/board/board.component';
-import { StartScreenComponent } from '../components/start-screen/start-screen.component';
-import { RoomError, RoomMessage, RoomType } from '../models/room-message';
-import { Subject } from 'rxjs';
+import { Injectable} from '@angular/core';
 import { DataService } from './data.service';
-import { Notification, NotificationType } from '../models/notification';
+import { Notification, NotificationError, NotificationType } from '../models/notification';
 import { HttpClient } from '@angular/common/http';
-import { GameBoard } from '../models/game-board';
 import { User } from '../models/user';
-import { CompileShallowModuleMetadata } from '@angular/compiler';
-import { TikTakToeComponent } from '../components/tik-tak-toe/tik-tak-toe.component';
 
 
 declare var SockJS;
@@ -26,12 +19,6 @@ export class CommunicationService {
 
 	connection;
 
-	private componentMethodCallSource = new Subject<any>();
-	componentMethodCalled$ = this.componentMethodCallSource.asObservable();
-
-	// userJoinedLeftFun: (notificationString: string) => void;
-
-
 	constructor(private dataService: DataService, private http: HttpClient) { }
 
 	/**
@@ -40,9 +27,9 @@ export class CommunicationService {
 	 * @param callback
 	 * @param roomId 
 	 */
-	connect(username: string, callback: (msg: RoomMessage) => void, roomId: string = "") {
+	connect(username: string, callback: (msg: Notification) => void, roomId: string = "") {
 		this.dataService.roomId = roomId;
-		this.dataService.thisUser = new User(username);
+		this.dataService.thisUser = new User(username, "", "", roomId);
 
 		const socket = new SockJS('http://localhost:8080/ws');
 		this.stompClient = Stomp.over(socket);
@@ -58,95 +45,84 @@ export class CommunicationService {
 			this.onError);
 	}
 
-	onConnected(reference: CommunicationService, callback: (msg: RoomMessage) => void) {
+	onConnected(reference: CommunicationService, callback: (msg: Notification) => void) {
 		if (this.dataService.roomId == "") {
 			reference.newRoom(callback);
 		} else {
 			reference.joinRoom(callback);
 		}
-
-		this.stompClient
 	}
 
 	onError(error) {
 		console.log(error)
 	}
 
-	newRoom(callback: (msg: RoomMessage) => void) {
+	newRoom(callback: (msg: Notification) => void) {
 		const topic = "/app/game/newRoom"
-		this.stompClient.send(topic, {}, JSON.stringify(new RoomMessage(RoomType.NEWROOM, this.dataService.thisUser), ["type", "user", "username", "error"]));
+		this.stompClient.send(topic,
+			{},
+			new Notification("", this.dataService.thisUser, NotificationType.NEWROOM, this.dataService.roomId).stringify());
 
 		this.stompClient.subscribe('/users/game/newRoomResponse', (msg) => {
-			const message = JSON.parse(msg.body);
-			this.dataService.roomId = message.roomId;
-			callback(message);
-
-			// this.stompClient.subscribe(`/game/${this.roomId}/userJoinedLeft`, (msg) => {
-			// 	const message = JSON.parse(msg.body);
-			// 	if (message.type.toString() === RoomType[RoomType.JOIN]) {
-			// 		this.userJoinedLeftFun(message.user + " Joined!");
-			// 	} else if (message.type.toString() === RoomType[RoomType.LEAVE]) {
-			// 		this.userJoinedLeftFun(message.user + " Left!");
-			// 	}	
-			// });
+			const notification = this.convertToNotification(msg);
+			this.dataService.roomId = notification.roomId;
+			this.dataService.thisUser.color = notification.user.color
+			callback(notification);
 
 			this.stompClient.subscribe(`/game/${this.dataService.roomId}/userAskJoin`, (msg) => {
-				const message = JSON.parse(msg.body);
-				this.dataService.addNotification(new Notification(`Wants To Join`, message.user, NotificationType.ASK));
-				console.log(message);
-			});
+				const notification = this.convertToNotification(msg);
+				this.dataService.addNotification(notification);
 
-			this.stompClient.subscribe(`/game/${this.dataService.roomId}/gameUpdate`, (msg) => {
-				const message = JSON.parse(msg.body);
-				console.log(message);
+				if (notification.type.toString() === NotificationType[NotificationType.ASK]) {
+					setTimeout(()=>{
+						if (this.dataService.notifications && this.dataService.notifications.length > 0) {
+							const n = this.dataService.notifications.find(noti => noti.messageId === notification.messageId);
+							if (n && n.type.toString() === NotificationType[NotificationType.ASK]) {
+								this.dataService.makeNotificationDeny(n);
+								this.denyEntry(n.user)
+							}
+						}
+					}, 20000);
+				}
 			});
+			this.subscribeMessages();
 		});
 	}
 
-	joinRoom(callback: (msg: RoomMessage) => void) {
-		// this.topic = `/app/game/${this.roomId}`;
+	joinRoom(callback: (msg: Notification) => void) {
 
 		this.stompClient.send(`/app/game/${this.dataService.roomId}/addUserWaitingRoom`,
 			{},
-			JSON.stringify(new RoomMessage(RoomType.JOIN, this.dataService.thisUser, this.dataService.roomId))
+			new Notification("", this.dataService.thisUser, NotificationType.ASK, this.dataService.roomId).stringify()
 	  	);
 
 		this.stompClient.subscribe('/users/game/joinRoomResponse', (msg) => {
-			const message = JSON.parse(msg.body);
-			this.dataService.roomId = message.roomId;
-			callback(message);
-			if (message.error.toString() === RoomError[RoomError.NONE]) {
-				this.stompClient.subscribe(`/game/${this.dataService.roomId}/userJoinedLeft`, (msg) => {
-					const message = JSON.parse(msg.body);
-					if (message.type.toString() === RoomType[RoomType.JOIN]) {
-						this.dataService.addNotification(new Notification(` Joined!`, msg.user, NotificationType.JOIN));
-						// this.userJoinedLeftFun(message.user + " Joined!");
-					} else if (message.type.toString() === RoomType[RoomType.LEAVE]) {
-						this.dataService.addNotification(new Notification(` Left!`, msg.user, NotificationType.LEAVE));
-						// this.userJoinedLeftFun(message.user + " Left!");
-					}	
-				});
+			const notification = this.convertToNotification(msg);
+			callback(notification);
+			if (notification.error.toString() === NotificationError[NotificationError.NONE]) {
+				this.dataService.roomId = notification.roomId;
+				this.dataService.thisUser.color = notification.user.color;
+				
+				JSON.parse(msg.body).users.forEach(user => {
+					this.dataService.addUser(new User(user.username, user.id, user.color, user.roomId, user.points))
+				})
+
+				this.subscribeMessages();
 			}
-		});
-		
-		console.log(1);
-		this.stompClient.subscribe(`/game/${this.dataService.roomId}/gameUpdate`, (msg) => {
-			const message = JSON.parse(msg.body);
-			console.log(this.dataService.currentGame.mySymbol);
 		});
 	}
 
 	acceptEntry(user: User) {
 		this.stompClient.send(`/app/game/${this.dataService.roomId}/addUserRoom`,
 			{},
-			JSON.stringify(new RoomMessage(RoomType.JOIN, user, this.dataService.roomId))
+			new Notification("", user, NotificationType.JOIN, this.dataService.roomId).stringify()
 	  	);
 	}
 
 	denyEntry(user: User) {
 		this.stompClient.send(`/app/game/${this.dataService.roomId}/denyUserRoom`,
 			{},
-			JSON.stringify(new RoomMessage(RoomType.LEAVE, user, this.dataService.roomId))
+			new Notification("", user, NotificationType.DENYENTRY, this.dataService.roomId).stringify()
 	  	);
 	}
 
@@ -160,11 +136,42 @@ export class CommunicationService {
 	updateGame(game: string) {
 		this.stompClient.send(`/app/game/${this.dataService.roomId}/updateGame`,
 		{},
-		game
+		JSON.stringify(game)
 	  );
 	}
 
-	// userJoinedLeft(fn: (notificationString: string) => void) {
-	// 	this.userJoinedLeftFun = fn;
-	// }
+	sendNotification(message: string) {
+		const a = new Notification(message, this.dataService.thisUser, NotificationType.CHAT).stringify()
+		console.log(a)
+		this.stompClient.send(`/app/game/${this.dataService.roomId}/notification`, {}, a);
+	}
+
+	private subscribeMessages(): void {
+		this.stompClient.subscribe(`/game/${this.dataService.roomId}/userJoinedLeft`, (msg) => {
+			const n = this.convertToNotification(msg);
+			if (n.type.toString() === NotificationType[NotificationType.JOIN]) {
+				this.dataService.addUser(new User(n.user.username, n.user.id, n.user.color, n.user.roomId))
+				this.dataService.addNotification(n);
+			} else if (n.type.toString() === NotificationType[NotificationType.LEAVE]) {
+				this.dataService.removeUser(new User(n.user.username, n.user.id, n.user.color, n.user.roomId))
+				this.dataService.addNotification(n);
+			}
+		});
+
+		this.stompClient.subscribe(`/game/${this.dataService.roomId}/gameUpdate`, (msg) => {
+			this.dataService.updateGame(msg.body);
+		});
+
+		this.stompClient.subscribe(`/game/${this.dataService.roomId}/notification`, (msg) => {
+			this.dataService.addNotification(this.convertToNotification(msg));
+		});
+	}
+
+	private convertToNotification(notification): Notification {
+		const n = JSON.parse(notification.body);
+		console.log(n)
+		console.log(n.user.color)
+		const user = new User(n.user.username, n.user.id, n.user.color, n.user.roomId)
+		return new Notification(n.message, user, n.type, n.roomId, notification.headers["message-id"], n.error)
+	}
 }

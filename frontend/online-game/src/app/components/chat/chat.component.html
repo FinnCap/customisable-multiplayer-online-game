@@ -1,3 +1,75 @@
 <div class="chat">
-    <p>chat works!</p>
+    <div class="chat-header">
+        <h2>Chat</h2>
+    </div>
+    <!-- <div class="line"></div> -->
+    <div class="chatWindow">
+        <ul #chatWindow>
+            <li *ngFor="let notification of getNotifications(); let i = index">
+                <div class="message" *ngIf="notification.isChat()">
+                    <div class="circle-container" [style.background-color]="notification.user.color">
+                        <div class="circle-text">
+                            {{notification.user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="message-content">
+                        <div class="name">{{notification.user.username}}</div>
+                        <div>{{notification.message}}</div>
+                    </div>
+                </div>
+
+                <div class="message" *ngIf="notification.isAsk()">
+                    <div class="circle-container" [style.background-color]="notification.user.color">
+                        <div class="circle-text">
+                            {{notification.user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div class="accept-deny">
+                            <div>{{notification.user.username}} wants to join the room</div>
+                            <div>
+                                <button class="button accept-deny-button" (click)="acceptEntry(notification)">Accept</button>
+                                <button class="button accept-deny-button" (click)="denyEntry(notification)">Deny</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="message" *ngIf="notification.isJoin()">
+                    <div class="circle-container" [style.background-color]="notification.user.color">
+                        <div class="circle-text">
+                            {{notification.user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div>{{notification.user.username}} joined the room!</div>
+                    </div>
+                </div>
+
+
+                <div class="message" *ngIf="notification.isLeave()">
+                    <div class="circle-container" [style.background-color]="notification.user.color">
+                        <div class="circle-text">
+                            {{notification.user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div>{{notification.user.username}} left the room!</div>
+                    </div>
+                </div>
+
+                <div *ngIf="i < getNotifications().length - 1" class="line"></div>
+            </li>
+        </ul>
+    </div>
+
+    <form [formGroup]="messageForm" (ngSubmit)="sendMessage()">
+        <div class="form-group">
+            <div class="input-send-area">
+                <input class="input chat-input" type="text" id="message" formControlName="message" placeholder="Type a message..." autocomplete="off" style="outline:none"/>
+                <button class="button" type="submit">Send</button>
+            </div>
+        </div>
+    </form>
 </div>

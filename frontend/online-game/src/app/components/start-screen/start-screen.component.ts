@@ -3,7 +3,7 @@ import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/fo
 import { CommunicationService } from 'src/app/services/communication.service';
 import { DataService } from 'src/app/services/data.service';
 import { Router } from '@angular/router';
-import { RoomError, RoomMessage } from 'src/app/models/room-message';
+import { Notification, NotificationError, NotificationType } from 'src/app/models/notification';
 
 @Component({
 	selector: 'app-start-screen',
@@ -37,7 +37,9 @@ export class StartScreenComponent implements OnInit {
 	});
 	joinRoomFormSubmitted = false;
 
-	constructor(private communicationService: CommunicationService, private _router: Router, private dataService: DataService) { }
+	constructor(private communicationService: CommunicationService, private _router: Router, private dataService: DataService) {
+
+	}
 
 	ngOnInit(): void { }
 
@@ -51,24 +53,24 @@ export class StartScreenComponent implements OnInit {
 	joinRoom() {
 		this.joinRoomFormSubmitted = true;
 		if (this.joinRoomForm.invalid) {
+			this.joinRoomFormSubmitted = false;
 			return;
 		}
-		this.joinRoomFormSubmitted = false;
-
+		
 		const roomCode = this.joinRoomForm.value.roomCode
 		const username = this.joinRoomForm.value.username
 
-		this.communicationService.connect(username, (msg: RoomMessage) => {
-			if (msg.error.toString() === RoomError[RoomError.NONE]) {
+		this.communicationService.connect(username, (msg: Notification) => {
+			if (msg.error.toString() === NotificationError[NotificationError.NOTEXIST]) {
+				this.displayedErrorMessage = "The Room Does Not Exist.";
+			} else if (msg.error.toString() === NotificationError[NotificationError.FULL]) {
+				this.displayedErrorMessage = "The Room is Full.";
+			} else if (msg.type.toString() === NotificationType[NotificationType.ADMITENTRY]) {
 				this._router.navigate(['/game'], { queryParams: { roomId: msg.roomId } });
-			} else if (msg.error.toString() === RoomError[RoomError.NOTEXIST]) {
-				this.displayedErrorMessage = "This Room Doesn't Exist,";
-			} else if (msg.error.toString() === RoomError[RoomError.FULL]) {
-				this.displayedErrorMessage = "The Room Is Full";
-			} else if (msg.error.toString() === RoomError[RoomError.NOTPERMITTED]) {
-				this.displayedErrorMessage = "You Have Not Been Permitted Entry.";
+			} else if (msg.type.toString() === NotificationType[NotificationType.DENYENTRY]) {
+				this.displayedErrorMessage = "You Have Been Denied The Entry.";
 			} else {
-				this.displayedErrorMessage = "An Unknown Error Occured.";
+				this.displayedErrorMessage = "An Unknown Error Occurred.";
 			}
 		}, roomCode);
 	}
@@ -83,12 +85,20 @@ export class StartScreenComponent implements OnInit {
 	newRoom() {
 		this.newRoomFormSubmitted = true;
 		if (this.newRoomForm.invalid) {
+			this.newRoomFormSubmitted = false;
 			return;
 		}
-		this.newRoomFormSubmitted = false;
 		const username = this.newRoomForm.value.username
-		this.communicationService.connect(username, (m: RoomMessage) => {
+		this.communicationService.connect(username, (m: Notification) => {
 			this._router.navigate(['/game'], { queryParams: { roomId: m.roomId } });
 		});
+	}
+
+	newRoomButtonDisabled(): boolean {
+		return this.newRoomFormSubmitted
+	}
+
+	joinRoomButtonDisabled(): boolean {
+		return this.joinRoomFormSubmitted
 	}
 }

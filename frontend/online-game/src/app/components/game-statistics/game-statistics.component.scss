@@ -4,23 +4,83 @@
     box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
     border-radius: 10px;
 
+    justify-content: center;
+    align-items: center;
+
     position: relative;
     padding: 0;
     margin: 0;
-    height: 100%;
+    height: 25vh;
     width: 100%;
 
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+    // font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
     -moz-box-sizing: border-box;    /* Firefox, other Gecko */
     box-sizing: border-box;
 }
 
-.this-user {
-    font-weight: bold;
+table {
+    display: flex;
+    flex-flow: column;
+    height: 100%;
+    width: 100%;
 }
 
-.available-games-list {
-    list-style-type: none;
-    padding: 0px 0px 0px 10px;
+table thead {
+    /* head takes the height it requires, 
+    and it's not scaled when table is resized */
+    flex: 0 0 auto;
+    width: 100%;
+    box-shadow: 0 5px 10px #e1e5ee;
+    padding-top: 15px;
+    padding-bottom: 15px;
+    border-radius: 4px;
+}
+
+table tbody {
+    /* body takes all the remaining available space */
+    flex: 1 1 auto;
+    display: block;
+    overflow-y: scroll;
+}
+
+table td {
+    width: 33%;
+}
+
+table tbody tr {
+    width: 100%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+table thead, table tbody tr {
+    display: table;
+    table-layout: fixed;
+}
+
+table tr:nth-child(even) {
+    background-color: #f4f6fb;
+}
+
+.circle-container {
+    float: left;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    margin-left: 25px;
+
+    display: flex;
+    justify-content: center;
+    align-content: center;
+    color: white;
+}
+
+.circle-text {
+    line-height: 36px;
+}
+
+.row-content {
+    height: 36px;
+    line-height: 36px;
 }

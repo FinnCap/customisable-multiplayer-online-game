@@ -1,13 +1,86 @@
 <div class="game-statistics">
-    <h2>Leaderboard</h2>
-    <ul class="available-games-list">
-        <li *ngFor="let user of getUsers()">
-            <div *ngIf="isThisUser(user.username); else elseBlock" class="this-user">
-                {{user.username}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.points}}
-            </div>
-            <ng-template #elseBlock>
-                {{user.username}}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{user.points}}
-            </ng-template>
-        </li>
-    </ul>
+
+    <!-- <div class="statistics-header">
+        <table>
+            <thead>
+                <tr>
+                    <th>Rank</th>
+                    <th>Name</th>
+                    <th>Points</th>
+                </tr>            
+            </thead>
+        </table>
+    </div> -->
+
+    <table>
+        <thead>
+            <tr>
+                <th>Rank</th>
+                <th>Name</th>
+                <th>Points</th>
+            </tr>            
+        </thead>
+
+        <tbody>
+            <tr *ngFor="let user of getUsers(); let i = index">
+                <td>{{i + 1}}</td>
+                <td *ngIf="isThisUser(user.id); else elseBlock" style="font-weight: bold">
+                    <div class="circle-container" [style.background-color]="user.color">
+                        <div class="circle-text">
+                            {{user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="row-content">
+                        {{user.username}}
+                    </div>
+                </td>
+                <ng-template  #elseBlock>
+                    <td>
+                        <div class="circle-container" [style.background-color]="user.color">
+                            <div class="circle-text">
+                                {{user.username.slice(0,1)}}
+                            </div>
+                        </div>
+                        <div class="row-content">
+                            {{user.username}}
+                        </div>
+                    </td>
+                </ng-template >
+                <td>{{user.points}}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <!-- <div class="tableWindow">
+        <ul #tableWindow>
+            <li *ngFor="let user of getUsers(); let i = index">
+                {{user.username}}
+                <td style="background-color: blue;">{{i + 1}}</td>
+                <div *ngIf="isThisUser(user.id); else elseBlock" style="width: 100%">
+                    <td style="background-color: blue; font-weight: bold">{{user.username}}</td>
+                </div>
+                <ng-template  #elseBlock>
+                    <td style="background-color: green;">{{user.username}}</td>
+                </ng-template >
+                <td style="background-color: yellow;">{{user.points}}</td>
+            </li>
+        </ul>
+    </div> -->
+
+    <!-- <div class="table-container">
+        <table>
+            <tbody>
+                <tr *ngFor="let user of getUsers()">
+                    <td style="background-color: blue;">1</td>
+                    <div *ngIf="isThisUser(user.id); else elseBlock" style="background-color: blue; font-weight: bold; width: 100%;">
+                        <td style="background-color: blue; font-weight: bold">{{user.username}}</td>
+                    </div>
+                    <ng-template  #elseBlock>
+                        <td style="background-color: green;">{{user.username}}</td>
+                    </ng-template >
+                    <td style="background-color: yellow;">{{user.points}}</td>
+                </tr>
+            </tbody>
+        </table>
+    </div> -->
 </div>  

@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
+// @import "../node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css";
 
 // html, body { height: 100%; }
 html, body { 
@@ -12,6 +12,49 @@ html, body {
  }
 
 
+// h2 {
+//     color: grey;
+// }
+
 h2 {
-    color: grey;
+    font-size: 28px;
+    font-weight: 350!important;
+    // line-height: 1.45em;
+    padding: 0px;
+    color: #00243a!important;
+    letter-spacing: -0.8px;
+    // margin-bottom: 0.7em;
+    // padding-bottom: 6px;
+}
+
+
+.input {
+    border: none;
+    border-bottom: solid 1px lightgray;
+    background-color: rgb(238, 238, 238);
+    padding: 15px;
+    font-size: large;
+    margin-right: 10px;
+    margin-left: 10px;
+    border-radius: 3px;
+}
+
+.button {
+    margin-top: 15px;
+    border: none;
+    background-color: dodgerblue;
+    font-size: large;
+    color: white;
+    padding: 15px;
+    border-radius: 3px;
+}
+
+.button:hover {
+    background-color: rgb(11, 133, 255);
+    cursor: pointer;
+}
+
+.button:disabled {
+    background-color: rgb(125, 190, 255);
+    cursor: default;
 }

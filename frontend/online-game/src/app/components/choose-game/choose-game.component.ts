@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { GameBoard } from 'src/app/models/game-board';
 import { CommunicationService } from 'src/app/services/communication.service';
 import { DataService } from 'src/app/services/data.service';
 
@@ -19,11 +18,11 @@ export class ChooseGameComponent implements OnInit {
   }
 
   chooseGame(game: string) {
-    this.dataService.currentGameName = game;
+    // this.dataService.currentGameName = game;
     var s = {
       name: game,
       player: "",
-      field: 0,
+      field: -1,
     }
     this.communicationService.chooseGame(JSON.stringify(s));
   }

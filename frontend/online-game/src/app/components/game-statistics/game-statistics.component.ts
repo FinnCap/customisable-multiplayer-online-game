@@ -21,8 +21,8 @@ export class GameStatisticsComponent implements OnInit {
     return users;
   }
 
-  isThisUser(username: string): boolean {
-    return (username == this.dataService.thisUser.username) ? true : false;
+  isThisUser(id: string): boolean {
+    return (id == this.dataService.thisUser.id) ? true : false;
   }
 
 }

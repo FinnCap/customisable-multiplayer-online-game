@@ -5,7 +5,6 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 // import { SocketIoModule, SocketIoConfig } from 'ngx-socket-io';
-import { SquareComponent } from './components/square/square.component';
 import { BoardComponent } from './components/board/board.component';
 import { StartScreenComponent } from './components/start-screen/start-screen.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -25,7 +24,6 @@ import { TikTakToeComponent } from './components/tik-tak-toe/tik-tak-toe.compone
 @NgModule({
   declarations: [
     AppComponent,
-    SquareComponent,
     BoardComponent,
     StartScreenComponent,
     ChooseGameComponent,

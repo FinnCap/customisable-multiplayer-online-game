@@ -42,9 +42,10 @@ export class BoardComponent implements OnInit {
 	}
 
 	get currentGameName() {
-		if (this.dataService.currentGame) {
-			return this.dataService.currentGame;
+		if (this.dataService.getCurrentGame()) {
+			return this.dataService.getCurrentGame().name;
 		}
+		return ""
 	}
 
 	acceptEntry(notification: Notification) {
