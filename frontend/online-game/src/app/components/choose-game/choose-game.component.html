@@ -1,8 +1,8 @@
 <div class="choose-game">
-    <h2>Choose A Game</h2>
+    <h2>Choose a Game</h2>
     <ul class="available-games-list">
         <li *ngFor="let game of availableGames">
-            <button class="choose-game-button" style="outline:none" (click)="chooseGame(game)">{{game}}</button>
+            <button [ngClass]="isActive(game.internalName) ? 'chosen-game-button' : 'not-chosen-game-button'" style="outline:none" (click)="chooseGame(game.internalName)">{{game.displayName}}</button>
         </li>
     </ul>
 </div>

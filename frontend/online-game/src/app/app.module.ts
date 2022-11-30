@@ -17,9 +17,8 @@ import { ChooseGameComponent } from './components/choose-game/choose-game.compon
 import { MainScreenComponent } from './components/main-screen/main-screen.component';
 import { GameStatisticsComponent } from './components/game-statistics/game-statistics.component';
 import { ChatComponent } from './components/chat/chat.component';
-import { TikTakToeComponent } from './components/tik-tak-toe/tik-tak-toe.component';
+import { TikTakToeComponent } from './components/games/tik-tak-toe/tik-tak-toe.component';
 
-// const config: SocketIoConfig = { url: 'http://localhost:4444', options: {} };
 
 @NgModule({
   declarations: [

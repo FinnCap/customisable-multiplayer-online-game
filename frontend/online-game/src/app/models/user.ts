@@ -17,8 +17,4 @@ export class User {
     setPoints(points: number) {
         this.points = points;
     }
-
-    // stringify(): string {
-    //     return "\"user\":{\"username\":\"" + this.username + "\",\"id\":\"" + this.id + "\"},"
-    // }
 }

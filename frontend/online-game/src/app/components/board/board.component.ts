@@ -1,9 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
-import { CommunicationService } from 'src/app/services/communication.service';
-import { Notification, NotificationType } from 'src/app/models/notification';
 import { DataService } from 'src/app/services/data.service';
-import { GameBoard } from 'src/app/models/game-board';
 
 @Component({
 	selector: 'app-board',
@@ -11,12 +7,12 @@ import { GameBoard } from 'src/app/models/game-board';
 	styleUrls: ['./board.component.scss']
 })
 
+/**
+ * This class represents the Board on which is the are for your game
+ */
 export class BoardComponent implements OnInit {
 
-
-	notifications: Notification[] = [];
-
-	constructor(private communicationService: CommunicationService, private dataService: DataService) {
+	constructor(private dataService: DataService) {
 
 	}
 
@@ -24,37 +20,26 @@ export class BoardComponent implements OnInit {
 
 	}
 
-	newGame() {
-		// this.registerService.newGame();
-	}
-
-	makeMove(idx: number) {
-		// this.registerService.makeMove(idx, this.roomId).then((result) => {
-		// 	console.log(result);
-		// }).catch((error) => {
-		// 	console.log(error);
-		// });
-
-	}
-
 	getRoomId(): string {
 		return this.dataService.roomId;
 	}
 
-	get currentGameName() {
-		if (this.dataService.getCurrentGame()) {
-			return this.dataService.getCurrentGame().name;
+	/**
+	 * For the HTML to check if the initial content should be displayed, that no game is currently chosen.
+	 * @return the name of the current game if any, otherwise an empty string
+	 */
+	get currentGameName(): string | undefined {
+		if (this.dataService.currentGame !== undefined) {
+			return this.dataService.currentGame?.name;
 		}
 		return ""
 	}
 
-	acceptEntry(notification: Notification) {
-		this.dataService.removeNotification(notification);
-		// this.communicationService.acceptEntry(new User()notification.username)
-	}
-
-	denyEntry(notification: Notification) {
-		this.dataService.removeNotification(notification);
-		// this.communicationService.denyEntry(notification.username)
+	/**
+	 * For the HTML.
+	 * @return an error message if for example not enough players are there to play the game.
+	 */
+	get errorMessage(): string {
+		return this.dataService.errorMessage;
 	}
 }

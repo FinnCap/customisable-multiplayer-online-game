@@ -59,6 +59,17 @@
                     </div>
                 </div>
 
+                <div class="message" *ngIf="notification.isWinner()">
+                    <div class="circle-container" [style.background-color]="notification.user.color">
+                        <div class="circle-text">
+                            {{notification.user.username.slice(0,1)}}
+                        </div>
+                    </div>
+                    <div class="notification-content">
+                        <div>{{notification.message}}</div>
+                    </div>
+                </div>
+
                 <div *ngIf="i < getNotifications().length - 1" class="line"></div>
             </li>
         </ul>

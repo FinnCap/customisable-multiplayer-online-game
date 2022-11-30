@@ -1,44 +1,58 @@
-import { Injectable } from '@angular/core';
-import { TikTakToeComponent } from '../components/tik-tak-toe/tik-tak-toe.component';
 import { Game } from '../models/game';
-import { Notification} from '../models/notification';
+import { Notification } from '../models/notification';
 import { User } from '../models/user';
+import {
+    Injectable,
+    ApplicationRef,
+    ComponentFactoryResolver,
+    ComponentRef,
+    Injector,
+    EmbeddedViewRef,
+    Type
+} from '@angular/core';
+
+declare var require: any
 
 @Injectable({
 	providedIn: 'root'
 })
 
 export class DataService {
+
+    /** the id of the room this {@link User} is currently in */
+    public roomId: string = "";
+    
+
+    /** optional error message to be displayed on the board */
+    public errorMessage: string = ""
+
     private _thisUser: User;
-    private _roomId: string = "";
-    private _currentGame: Game;
+
+    /** Reference to the Game component which is currently active, undefined if no component is active */
+    private _currentGame: ComponentRef<any> | undefined;
+
+    /** List of {@link Notification}s for the chat */
     private _notifications: Notification[] = [];
+
+    /** List of {@link User}s, which are in the same room as this user */
     private _users: User[] = []; 
 
-    constructor() {
-        // this._users.push(new User("Peter", "1", "#FFBF00", "", 7))
-        // this._users.push(new User("Herbert", "2", "#FF7F50", "", 5))
-        // this._users.push(new User("Anna", "3", "#DE3163", "", 1))
-        // this._users.push(new User("Eszter", "4", "#9FE2BF", "", 4))
-        // this._users.push(new User("Kika", "5", "#40E0D0", "", 7))
-        // this._users.push(new User("Paulo", "6", "#6495ED", "", 3))
-        // this._users.push(new User("Andre", "7", "#CCCCFF", "", 9))
-        // this._users.push(new User("Jan", "8", "#1ABC9C", "", 10))
-        // this._users.push(new User("Lars", "9", "#34495E", "", 8))
-        // this._users.push(new User("Sören", "10", "#8E44AD", "", 39))
+    constructor(
+        private _appRef: ApplicationRef,
+        private _resolver: ComponentFactoryResolver,
+        private _injector: Injector) {
     }
 
     /**
-     * Returns the own user.
-     * @returns {User}
+     * @returns this {@link User}
      */
     get thisUser(): User {
         return this._thisUser;
     }
 
     /**
-     * Creates the own User.
-     * @param {string} username username
+     * Creates this {@link User}.
+     * @param user this {@link User}
      */
     set thisUser(user: User) {
         this._thisUser = user;
@@ -46,123 +60,166 @@ export class DataService {
     }
 
     /**
-     * Returns the current room id.
-     * @returns {string}
+     * @return the instance of the {@link _currentGame} if defined.
      */
-    get roomId(): string {
-        return this._roomId;
+    get currentGame(): Game | undefined {
+        if (this._currentGame === undefined) {
+            return undefined;
+        }
+        return this._currentGame.instance;
     }
 
     /**
-     * Sets the current room id.
-     * @param {string} roomId
-     */
-    set roomId(roomId: string) {
-        this._roomId = roomId;
-    }
-
-    /**
-     * Returns a list of the current users
-     * @return {User[]}
-    */
-    get users(): User[] {
-        return this._users;
-    }
-
-    /**
-     * Returns the name of the current game.
-     * @return {Game}
-     */
-     public getCurrentGame(): Game {
-        return this._currentGame;
-    }
-
-    /**
-     * Sets the name of the current game.
-     * @param {Game} currentGame
+     * Function sets or updates the {@link _currentGame}.
+     * If a new game is chosen, the game string must include a game_name field,
+     * that contains the name of the Game Component Class without Component at the end.
+     * 
+     * E.g. export class TikTakToeComponent extends Game implements OnInit { ... }
+     * {
+     *     game_name: "TikTakToe",
+     *     ...
+     * }
+     * 
+     * The component folder must be located under src/app/components/games/ and the folder and its
+     * file names must be the game_name in dash-case:
+     * E.g. game_name: "TikTakToe",
+     * tik-tak-toe:
+     *     tik-tak-toe.component.html
+     *     tik-tak-toe.component.scss
+     *     tik-tak-toe.component.ts
+     * @param game the string for the game which has been chosen
      */
      public updateGame(game: string) {
         const g = JSON.parse(game)
-        if (this._currentGame == null) {
-            if (g.game_name == "TikTakToe") {
-                var ga = new TikTakToeComponent()
-                ga.currentPlayer = g.next_player
-                ga.mySymbol = (g.player_o == this._thisUser.id) ? "O" : "X"
-                ga.winner = ""
-                this._currentGame = ga
+        if (this._currentGame === undefined || g.game_name !== this._currentGame.instance.name) {
+            if (this._currentGame !== undefined) {
+                this._removeGameRef();
+                this._currentGame = undefined
             }
+
+            if (g.error == "true") {
+                this.errorMessage = g.message;
+                return
+            }
+
+            const componentFolderName = g.game_name.split(/(?=[A-Z])/).join("-").toLowerCase();
+            const location = componentFolderName + "/" + componentFolderName
+            const dynModule = require('../components/games/' + location + ".component.ts");
+            this._setGameRef(dynModule[g.game_name + "Component"]);
+
+            if (this._currentGame !== null) {
+                this._currentGame!.instance.updateGameBoard(game)
+            }
+
+            this.errorMessage = g.message;
         } else {
-            if (this._currentGame instanceof TikTakToeComponent) {
-                this._currentGame.currentPlayer = g.next_player
-                this._currentGame.board = g.board.replace(/\s/g, '').slice(1, -1).split(",")
-                this._currentGame.winner = g.winner
-            }
+            this._currentGame.instance.updateGameBoard(game)
         }
     }
 
-    public updateGameObject(game: Game) {
-        if (game instanceof TikTakToeComponent && this._currentGame instanceof TikTakToeComponent) {
-            game.currentPlayer = this._currentGame.currentPlayer
-            game.mySymbol = this._currentGame.mySymbol
-            game.winner = ""
-            this._currentGame = game
-        }
+    public get users(): User[] {
+        return this._users;
     }
-
+    
     /**
-     * Creates a new User from the username and add it to the list of users.
-     * @param {username} username
+     * Adds a {@link User} to the list of {@link _users}.
+     * @param user the {@link User} which should be added to the list of {@link _users}
     */
      public addUser(user: User) {
-        let u = this.findUser(user)
+        let u = this.findUser(user.id)
         if (u == undefined) {
             this._users.push(user);
         }        
     }
 
-    public findUser(user: User): User | undefined {
-        return this._users.find(u => u.id == user.id)
+    /** 
+     * Finds a user by the users id
+     * @param userId the id of the user
+     * @return the {@link User} if found, else {@link undefined}
+     */
+    public findUser(userId: string): User | undefined {
+        return this._users.find(u => u.id == userId)
     }
 
+    /** 
+     * Removes a user from {@link _users} if the user left the room for example.
+     * @param user the user to be removed
+     */
     public removeUser(user: User) {
-        const index = this.users.indexOf(user, 0);
+        const index = this._users.findIndex(u => u.id === user.id)
         if (index > -1) {
-            this.users.splice(index, 1);
+            this._users.splice(index, 1);
         }
     }
 
+    /** 
+     * Adds a {@link Notification} to the list {@link _notifications}
+     * @param notification the {@link Notification} to be added to the list {@link _notifications}
+     */
     public addNotification(notification: Notification) {
         this._notifications.push(notification);
     }
-
+    
+    /** @return the list of {@link _notifications} */
     get notifications(): Notification[] {
         return this._notifications;
     }
 
-    public getNotificationAt(index: number): Notification | null {
-        if (index >= 0 && this._notifications.length < index) {
-            return this._notifications[index];
-        } else {
-            return null;
-        }
-
-    }
-
+    /**
+     * Function removes a {@link Notification} from the list {@link _notifications}.
+     * For example if a user was admitted to enter the room the {@link Notification}should be removed.
+     * @param not the {@link Notification} to be removed
+     */
     public removeNotification(not: Notification): void {
         this._notifications.forEach((n, index) => {
-            if (n.message === not.message && n.user.id === not.user.id && n.type === not.type) {
+            if (n.equals(not)) {
                 this._notifications.splice(index, 1);
             }
         });
     }
 
+    /**
+     * Sends a {@link Notification} to the backend, that the user wanting to join the room is allowed to join the room.
+     * @param not the {@link Notification} containing the accept message for a specific user
+     */
     public makeNotificationJoin(not: Notification): void {
         const pos = this._notifications.findIndex(n => n.messageId === not.messageId);
         this._notifications.splice(pos, 1);
     }
 
+    /**
+     * Sends a {@link Notification} to the backend, that the user wanting to join the room is not allowed to join the room.
+     * @param not the {@link Notification} containing the deny message for a specific user
+     */
     public makeNotificationDeny(not: Notification): void {
         const pos = this._notifications.findIndex(n => n.messageId === not.messageId);
         this._notifications.splice(pos, 1);
+    }
+
+    /**
+     * Sets the ComponentRef in currentGame and adds it to the parent div in
+     * {@link board.component.html }.
+     * @param component the loaded component
+     */
+    private _setGameRef(component: Type<unknown>): void {
+        const componentRef = this._resolver.resolveComponentFactory(component).create(this._injector);
+        this._appRef.attachView(componentRef.hostView);
+
+        const element = document.getElementById("currentGame");
+        if (element !== null) {
+            element.appendChild((componentRef.hostView as EmbeddedViewRef<any>).rootNodes[0] as HTMLElement);
+            this._currentGame = componentRef
+        }
+    }
+
+    /**
+     * Deletes the ComponentRef of the current game and removes it from the parent div in
+     * {@link board.component.html }.
+     */
+    private _removeGameRef(): void {
+        if (this._currentGame) {
+            this._appRef.detachView(this._currentGame.hostView);
+            this._currentGame.destroy();
+        }
     }
 }

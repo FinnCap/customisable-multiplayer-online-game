@@ -25,7 +25,25 @@ li {
     box-sizing: border-box;
 }
 
-.choose-game-button {
+.chosen-game-button {
+    background-color: dodgerblue;
+    padding: 15px;
+    font-size: large;
+    margin-right: 10px;
+
+    border-radius: 5px;
+    border-color: dodgerblue;
+    color: white;
+    margin-top: 10px;
+    border: solid;
+}
+
+.chosen-game-button:hover {
+    background-color: rgb(11, 133, 255);
+    cursor: pointer;
+}
+
+.not-chosen-game-button {
     background-color: white;
     padding: 15px;
     font-size: large;
@@ -38,7 +56,7 @@ li {
     border-style: solid;
 }
 
-.choose-game-button:hover {
+.not-chosen-game-button:hover {
     background-color: #e7e7e7;
     cursor: pointer;
 }

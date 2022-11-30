@@ -1,41 +1,17 @@
-<!-- <div *ngFor="let not of dataService.notifications; let i = index">
-    <div class="notification" style.top="{{5 + (i * 9)}}%">
-        <div class="avatar">{{ not.username.charAt(0) }}</div>
-        <div class="notification-label">{{ not.message }}</div>
-        <div class="button-box">
-            <div><button class="button" [hidden]="not.type != 2" (click)="acceptEntry(not)">Admit</button></div>
-            <div><button class="button" [hidden]="not.type != 2" (click)="denyEntry(not)">Deny</button></div>
-        </div>
-    </div>
-</div> -->
 <div class="board">
-    <h2> Room Id: {{ getRoomId() }} </h2>
-    <div *ngIf="currentGameName == 'TikTakToe'">
-        <app-tik-tak-toe></app-tik-tak-toe>
+    <div id="currentGame"></div>
+    <div class="no-game" *ngIf="currentGameName == ''">
+        <h2>
+            Invite Your Friends Using the Room Code:<br><br>
+            {{getRoomId()}}<br><br>
+            and Choose a Game On the Right!
+            <br><br>
+            <div class="error-message" *ngIf="errorMessage != ''">
+                {{errorMessage}}
+            </div>
+        </h2>
+    </div>
+    <div class="game" *ngIf="currentGameName !== ''">
+        <h2> Room Code: {{ getRoomId() }} </h2>
     </div>
 </div>
-
-<!-- <div class="center">
-    <div>
-        <h1>Current Player: </h1>
-        <button (click)="newGame()">Start a new Game</button>
-
-        <h2 *ngIf="winner">
-            Player {{ winner }} won the game!
-        </h2>
-
-        <main>
-            <app-square class="square-1" [value]="getField(0)" (click)="makeMove(0)"></app-square>
-            <app-square class="square-2" [value]="getField(1)" (click)="makeMove(1)"></app-square>
-            <app-square class="square-3" [value]="getField(2)" (click)="makeMove(2)"></app-square>
-            <app-square class="square-4" [value]="getField(3)" (click)="makeMove(3)"></app-square>
-            <app-square class="square-5" [value]="getField(4)" (click)="makeMove(4)"></app-square>
-            <app-square class="square-6" [value]="getField(5)" (click)="makeMove(5)"></app-square>
-            <app-square class="square-7" [value]="getField(6)" (click)="makeMove(6)"></app-square>
-            <app-square class="square-8" [value]="getField(7)" (click)="makeMove(7)"></app-square>
-            <app-square class="square-9" [value]="getField(8)" (click)="makeMove(8)"></app-square>
-        </main>
-        <label>Room Id: {{ roomId }}</label>
-
-    </div>
-</div> -->

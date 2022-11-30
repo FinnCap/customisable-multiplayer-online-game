@@ -1,5 +1,3 @@
-
-
 <div class="login-page">
     <div class="login-page-top"></div>
     <div class="login-page-container">
@@ -7,7 +5,7 @@
         <form [formGroup]="newRoomForm" (ngSubmit)="newRoom()">
             <div>
                 <input class="input" name="username" placeholder="Username" style="outline:none" formControlName="username" [ngClass]="{ 'is-invalid': fN.username.errors }">
-                <button class="button" style="outline:none" [disabled]="newRoomButtonDisabled() || joinRoomButtonDisabled()">Start New Room</button>
+                <button class="button" style="outline:none" [disabled]="newRoomFormSubmitted || joinRoomFormSubmitted">Start New Room</button>
                 <div *ngIf="newRoomFormSubmitted && fN.username.errors" class="invalid-feedback">
                     <div class="error-label" *ngIf="fN.username.errors.required">Username is required</div>
                     <div class="error-label" *ngIf="fN.username.errors.minlength">
@@ -19,6 +17,7 @@
 
         <br>
         <div class="line"><span class="line-text">or</span></div>
+        <div [hidden]="!(newRoomFormSubmitted || joinRoomFormSubmitted)" class="button--loading"></div>
         <form [formGroup]="joinRoomForm" (ngSubmit)="joinRoom()">
             <div class="form-group">
                 <input class="input" name="username" placeholder="Username" style="outline:none" formControlName="username" [ngClass]="{ 'is-invalid': fJ.username.errors }">
@@ -34,7 +33,8 @@
                     <div class="error-label" *ngIf="fJ.roomCode.errors.minlength">Room Code must be at least 10 characters</div>
                 </div>
             </div>
-            <div><button class="button" type="submit" style="outline:none" [disabled]="joinRoomButtonDisabled() || newRoomButtonDisabled()">Join Room</button></div>
+            <div><button class="button" type="submit" style="outline:none" [disabled]="joinRoomFormSubmitted || newRoomFormSubmitted">Join Room</button></div>
+            <br>
             <label class="error-label">{{ displayedErrorMessage }}</label>
         </form>
     </div>

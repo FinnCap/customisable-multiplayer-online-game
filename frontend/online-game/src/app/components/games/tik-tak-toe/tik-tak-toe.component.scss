@@ -97,3 +97,19 @@ button:disabled {
     background-color: rgb(209, 209, 209);
     cursor: default;
 }
+
+.information-board {
+    font-size: 20px;
+    font-weight: 350!important;
+    color: #00243a!important;
+    letter-spacing: -0.8px;
+    border-radius: 5px;
+    background-color: rgb(240, 240, 240);
+    left: 15px;
+    top: 15px;
+    padding: 15px;
+    width: 245px;
+    box-shadow: 0 1px 11px rgba(0, 0, 0, 0.27);
+    float: left;
+    position: absolute;
+}

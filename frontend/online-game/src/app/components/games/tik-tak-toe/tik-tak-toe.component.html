@@ -9,4 +9,16 @@
     <button class="square-8" (click)="makeMove(7)" [disabled]="fieldDisabled(7)"> {{getField(7)}} </button>
     <button class="square-9" (click)="makeMove(8)" [disabled]="fieldDisabled(8)"> {{getField(8)}} </button>
 </div>
-<h3>My Symbol: {{mySymbol}} </h3>
+
+<div class="information-board" [hidden]="!partOfTheGame()">
+    <div>Your Symbol: {{mySymbol}}</div>
+    <div [hidden]="!myTurn || isOver()">
+        It is your Turn!
+    </div>
+    <div [hidden]="myTurn || isOver()">
+        Waiting for your Opponent!
+    </div>
+    <div [hidden]="!isOver()">
+        The game is over!
+    </div>
+</div>
