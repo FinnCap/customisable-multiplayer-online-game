@@ -110,5 +110,8 @@
       }
     }
   },
-  "defaultProject": "online-game"
+  "defaultProject": "online-game",
+  "cli": {
+    "analytics": false
+  }
 }
