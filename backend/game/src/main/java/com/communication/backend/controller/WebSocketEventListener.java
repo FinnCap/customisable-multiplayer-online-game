@@ -1,6 +1,7 @@
 package com.communication.backend.controller;
 
-import com.communication.backend.model.RoomMessage;
+import com.communication.backend.model.Notification;
+import com.communication.backend.model.Room;
 import com.communication.backend.model.User;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,8 +14,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.socket.messaging.SessionConnectedEvent;
 import org.springframework.web.socket.messaging.SessionDisconnectEvent;
 
+import java.security.Principal;
+
 import static java.lang.String.format;
 
+/**
+ * Class handles WebSocketConnections. The main purpose is to inform other users, when a user left their room.
+ */
 @Component
 public class WebSocketEventListener {
 
@@ -31,25 +37,27 @@ public class WebSocketEventListener {
         logger.info("Received a new web socket connection");
     }
 
+    /**
+     * Function notifies the other users if a user left their room. This will also delete the user from the game
+     * statistics.
+     * @param  event    The disconnect event for a given user
+     */
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
         StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        UsernamePasswordAuthenticationToken user = (headerAccessor.getUser() != null) ? (UsernamePasswordAuthenticationToken) headerAccessor.getUser() : null;
-        if(user != null) {
-            String roomId = roomController.getRoomIdByUser(null);
-            if (roomId != null) {
-                logger.info("User Disconnected: " + user.getName() + "; From Room: " + roomId);
-                roomController.removeUserFromRoomByUser(null);
-
-                RoomMessage msg = new RoomMessage(RoomMessage.RoomType.LEAVE,
-                        new User(user.getName(), roomId),
-                        RoomMessage.RoomError.NONE);
-/*                msg.setType(RoomMessage.RoomType.LEAVE);
-                msg.setRoomId(roomId);
-                msg.setUser(new User(user.getName(), roomId));
-                msg.setError(RoomMessage.RoomError.NONE);*/
-
-                messagingTemplate.convertAndSend(format("/game/%s/userJoinedLeft", roomId), msg);
+        Principal p = headerAccessor.getUser();
+        if(p != null) {
+            UsernamePasswordAuthenticationToken u = (UsernamePasswordAuthenticationToken) p;
+            User user = roomController.getUserById((String) u.getPrincipal());
+            if (user != null) {
+                logger.info("User Disconnected: " + user);
+                Room r = roomController.getRoomByUser(user);
+                if (r != null) {
+                    r.removeUserRoom(user);
+                    roomController.deleteRoom(r);
+                }
+                Notification notification = new Notification("", user, Notification.NotificationType.LEAVE);
+                messagingTemplate.convertAndSend(format("/game/%s/userJoinedLeft", user.getRoomId()), notification);
             }
         }
     }

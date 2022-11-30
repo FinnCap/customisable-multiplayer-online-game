@@ -3,54 +3,99 @@ package com.communication.backend.model;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.security.Principal;
+import java.util.Random;
 
+/**
+ * This class implements a user of the system
+ */
 public class User implements Principal {
-    private String username = "";
-    private String roomId = "";
-    private int turn = -1;
-    private String id = "";
-    private int points = 0;
-    private String symbol = ""; // the symbol the player has in the game. E.g. TikTakToe X or O
 
+    /** The name as entered in the frontend */
+    @JsonProperty("username") private String username = "";
 
-    public User(@JsonProperty("username") String username) {
+    /** The name id for the person, is the stomp session id and the user is identified with this */
+    @JsonProperty("id") private final String id;
+
+    /** The room id the person is in */
+    @JsonProperty("roomId") private String roomId = "";
+
+    /** The number of games the user won */
+    @JsonProperty("points") private int points = 0;
+
+    /** The color associated with the user for its icon in the frontend */
+    @JsonProperty("color") private String color = ""; // hex color for symbol in chat
+
+    public User(String username, String id) {
         this.username = username;
-    }
-
-    public User(String username, String roomId, int turn, String id) {
-        this.username = username;
-        this.roomId = roomId;
-        this.turn = turn;
         this.id = id;
+        String[] colorValues = new String[]{"#FFBF00", "#FF7F50", "#DE3163", "#9FE2BF", "#40E0D0", "#6495ED", "#CCCCFF",
+        "#1ABC9C", "#34495E", "#8E44AD"};
+        this.color = colorValues[new Random().nextInt(10)];
     }
 
-    public User(String username, String roomId) {
-        this.username = username;
+    /**
+     * @return the id of this user as a string
+     */
+    public String getId() {
+        return this.id;
+    }
+
+    /**
+     * @return the id of the room this user is in as a string
+     */
+    public String getRoomId() {
+        return this.roomId;
+    }
+
+    /**
+     * @param roomId the id of the room this user is in as a string
+     */
+    public void setRoomId(String roomId) {
         this.roomId = roomId;
     }
 
+    /**
+     * @return the number of points for this user
+     */
+    public int getPoints() {
+        return this.points;
+    }
+
+    /**
+     * sets the number of points for this user
+     * @param points the updated number of points
+     */
+    public void setPoints(int points) {
+        this.points = points;
+    }
+
+    /**
+     * converts this user into a string representation with all its properties
+     * @return the user in a string representation
+     */
+    @Override
+    public String toString() {
+        String s = "User:\n";
+        s += "  username: " + this.username + "\n";
+        s += "  roomId: " + this.roomId + "\n";
+        s += "  id: " + this.id + "\n";
+        s += "  points: " + this.points + "\n";
+        s += "  color: " + this.color;
+        return s;
+    }
+
+    /**
+     * @return the username of this user as a string
+     */
     @Override
     public String getName() {
         return this.username;
     }
 
-    public String getId() {
-        return this.id;
-    }
-
-    public String getRoomId() {
-        return this.roomId;
-    }
-
-    public void setRoomId(String roomId) {
-        this.roomId = roomId;
-    }
-
-    @Override
-    public String toString() {
-        return "Username: " + this.username + "; roomId: " + this.roomId;
-    }
-
+    /**
+     * Compares two users, if the ids are the same, the users are considered to the equal
+     * @return true if user ids are the same, else false
+     */
     @Override
     public boolean equals(Object obj) {
         if (obj == null) {
@@ -62,18 +107,17 @@ public class User implements Principal {
         }
 
         final User user = (User) obj;
-        return this.username.equals(user.getName());
+        return this.id.equals(user.getId());
     }
 
-    public int getTurn() {
-        return this.turn;
-    }
-
-    public void setSymbol(String s) {
-        this.symbol = s;
-    }
-
-    public String getSymbol() {
-        return this.symbol;
+    /**
+     * Function sets a random color for this user if this has not been done before.
+     */
+    public void setColor() {
+        if (this.color.equals("")) {
+            String[] colorValues = new String[]{"#FFBF00", "#FF7F50", "#DE3163", "#9FE2BF", "#40E0D0", "#6495ED",
+                    "#CCCCFF", "#1ABC9C", "#34495E", "#8E44AD"};
+            this.color = colorValues[new Random().nextInt(10)];
+        }
     }
 }

@@ -12,9 +12,15 @@ import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
 
+
+/**
+ * Class checks before sending a message if the call was a CONNECT call and in that case calls
+ * the @see com.communication.backend.components.WebSocketAuthenticatorService to create a new
+ * UsernamePasswordAuthenticationToken. Otherwise, the message will just be returned.
+ * Nothing needs to be changed here.
+ */
 @Component
 public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
-    private static final String USERNAME_HEADER = "username";
     private final WebSocketAuthenticatorService webSocketAuthenticatorService;
 
     @Inject
@@ -22,14 +28,18 @@ public class AuthChannelInterceptorAdapter implements ChannelInterceptor {
         this.webSocketAuthenticatorService = webSocketAuthenticatorService;
     }
 
+    /**
+     * Function calls getAuthenticatedOrFail in the @see com.communication.backend.components.WebSocketAuthenticatorService
+     * to get a new UsernamePasswordAuthenticationToken before sending a message to a new user on a CONNECT
+     * call. Otherwise, the message will just be returned.
+     */
     @Override
     public Message<?> preSend(final Message<?> message, final MessageChannel channel) throws AuthenticationException {
         final StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
         if (accessor != null && StompCommand.CONNECT == accessor.getCommand()) {
+            final String id = accessor.getSessionId();
 
-            final String username = accessor.getFirstNativeHeader(USERNAME_HEADER);
-
-            final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(username);
+            final UsernamePasswordAuthenticationToken user = webSocketAuthenticatorService.getAuthenticatedOrFail(id);
             accessor.setUser(user);
         }
         return message;

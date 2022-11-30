@@ -10,6 +10,9 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 
 import javax.inject.Inject;
 
+/**
+ * Nothing to do here
+ */
 @Configuration
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class WebSocketAuthenticationSecurityConfig implements WebSocketMessageBrokerConfigurer {
@@ -23,6 +26,6 @@ public class WebSocketAuthenticationSecurityConfig implements WebSocketMessageBr
 
     @Override
     public void configureClientInboundChannel(final ChannelRegistration registration) {
-        registration.setInterceptors(authChannelInterceptorAdapter);
+        registration.interceptors(authChannelInterceptorAdapter);
     }
 }

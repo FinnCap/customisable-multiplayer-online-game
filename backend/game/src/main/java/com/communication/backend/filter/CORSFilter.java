@@ -7,10 +7,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Nothing to do here
+ */
 public class CORSFilter implements Filter {
 
-    // This is to be replaced with a list of domains allowed to access the server
-    //You can include more than one origin here
+    // TODO Change the origin if the request from the frontend comes from another origin
     private final List<String> allowedOrigins = Arrays.asList("http://localhost:4200");
 
     public void destroy() {
@@ -18,7 +20,6 @@ public class CORSFilter implements Filter {
     }
 
     public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
-        // Lets make sure that we are working with HTTP (that is, against HttpServletRequest and HttpServletResponse objects)
         if (req instanceof HttpServletRequest && res instanceof HttpServletResponse) {
             HttpServletRequest request = (HttpServletRequest) req;
             HttpServletResponse response = (HttpServletResponse) res;
