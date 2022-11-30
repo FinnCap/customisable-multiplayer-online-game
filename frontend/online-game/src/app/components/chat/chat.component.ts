@@ -1,6 +1,6 @@
 import { Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { Notification } from 'src/app/models/notification';
-import { FormControl, FormGroup } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup } from '@angular/forms';
 import { CommunicationService } from 'src/app/services/communication.service';
 import { DataService } from 'src/app/services/data.service';
 
@@ -16,8 +16,8 @@ import { DataService } from 'src/app/services/data.service';
 export class ChatComponent implements OnInit {
 
 	/** Form for the message */
-	messageForm = new FormGroup({
-		message: new FormControl("")
+	messageForm = new UntypedFormGroup({
+		message: new UntypedFormControl("")
 	});
 
 	/** Reference to the are with chat messages to automatically scroll to the bottom */

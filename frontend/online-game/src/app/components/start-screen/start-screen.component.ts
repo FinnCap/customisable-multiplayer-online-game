@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators, AbstractControl } from '@angular/forms';
+import { UntypedFormControl, UntypedFormGroup, Validators, AbstractControl } from '@angular/forms';
 import { CommunicationService } from 'src/app/services/communication.service';
 import { DataService } from 'src/app/services/data.service';
 import { Router } from '@angular/router';
@@ -19,8 +19,8 @@ export class StartScreenComponent implements OnInit {
 
 
 	/** Form to create a new Room, contains the username, which is independent from the username in the joinRoomForm */
-	newRoomForm = new FormGroup({
-		username: new FormControl("", [
+	newRoomForm = new UntypedFormGroup({
+		username: new UntypedFormControl("", [
 			Validators.required,
 			Validators.minLength(4)
 		])
@@ -29,12 +29,12 @@ export class StartScreenComponent implements OnInit {
 	newRoomFormSubmitted = false;
 
 	/** Form to join a Room, containes the username(independent from the username from newRoomForm) */
-	joinRoomForm = new FormGroup({
-		roomCode: new FormControl("", [
+	joinRoomForm = new UntypedFormGroup({
+		roomCode: new UntypedFormControl("", [
 			Validators.required,
 			Validators.minLength(1)
 		]),
-		username: new FormControl("", [
+		username: new UntypedFormControl("", [
 			Validators.required,
 			Validators.minLength(4)
 		])

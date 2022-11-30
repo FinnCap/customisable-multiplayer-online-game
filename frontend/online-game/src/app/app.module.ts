@@ -21,32 +21,29 @@ import { TikTakToeComponent } from './components/games/tik-tak-toe/tik-tak-toe.c
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    BoardComponent,
-    StartScreenComponent,
-    ChooseGameComponent,
-    MainScreenComponent,
-    GameStatisticsComponent,
-    ChatComponent,
-    TikTakToeComponent
-  ],
-  imports: [
-    BrowserModule,
-    AppRoutingModule,
-    FormsModule,
-    BrowserAnimationsModule,
-    MatButtonModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    ReactiveFormsModule,
-    HttpClientModule
-  ],
-  providers: [],
-  bootstrap: [AppComponent],
-  entryComponents: [
-    StartScreenComponent
-  ]
+    declarations: [
+        AppComponent,
+        BoardComponent,
+        StartScreenComponent,
+        ChooseGameComponent,
+        MainScreenComponent,
+        GameStatisticsComponent,
+        ChatComponent,
+        TikTakToeComponent
+    ],
+    imports: [
+        BrowserModule,
+        AppRoutingModule,
+        FormsModule,
+        BrowserAnimationsModule,
+        MatButtonModule,
+        MatDialogModule,
+        MatFormFieldModule,
+        MatInputModule,
+        ReactiveFormsModule,
+        HttpClientModule
+    ],
+    providers: [],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }
