@@ -1,0 +1,17 @@
+<div class="board">
+    <div id="currentGame"></div>
+    <div class="no-game" *ngIf="!gameActive">
+        <h2>
+            Invite Your Friends Using the Room Code:<br><br>
+            {{getRoomId()}}<br><br>
+            and Choose a Game On the Right!
+            <br><br>
+            <div class="error-message" *ngIf="errorMessage != ''">
+                {{errorMessage}}
+            </div>
+        </h2>
+    </div>
+    <div class="game" *ngIf="gameActive">
+        <h2> Room Code: {{ getRoomId() }} </h2>
+    </div>
+</div>

@@ -69,3 +69,7 @@ baseline.json
 
 # Built Visual Studio Code Extensions
 *.vsix
+
+.angular
+.editorconfig
+.browserslistrc
