@@ -12,7 +12,7 @@
 	<artifactId>backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>backend</name>
-	<description>Spring boot backend </description>
+	<description>Spring boot backend</description>
 	<properties>
 		<java.version>11</java.version>
 	</properties>
